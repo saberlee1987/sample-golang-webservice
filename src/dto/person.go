@@ -6,17 +6,17 @@ import (
 )
 
 type Customer struct {
-	Id        int
-	FirstName string
-	LastName  string
-	Email     string
+	Id        int    `json:"id"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
 }
 
 func (c Customer) String() string {
-	json, err := json.Marshal(c)
+	marshal, err := json.Marshal(c)
 	if err != nil {
 		return fmt.Sprintf("{\"id\":%d,\"firstName\":\"%s\",\"lastName\":\"%s\",\"email\":\"%s\"}",
 			c.Id, c.FirstName, c.LastName, c.Email)
 	}
-	return string(json)
+	return string(marshal)
 }
