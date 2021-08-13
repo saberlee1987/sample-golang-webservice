@@ -11,10 +11,33 @@ import (
 
 var route *gin.Engine
 
+// @title Customer Service
+// @version 1.0
+// @description This is a sample server Customer Service
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name Saber Azizi
+// @contact.url http://www.swagger.io/support
+// @contact.email saberazizi66@yahoo.com
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:9696
+// @BasePath /api/v1
+// @query.collection.format multi
+// @x-extension-openapi {"example": "value on a json format"}
 func StartServer(port int) {
 	gin.SetMode(gin.ReleaseMode)
 	route = gin.Default()
 	route.Use(cors())
+
+	//docs.SwaggerInfo.Title = "Swagger Example API"
+	//docs.SwaggerInfo.Description = "This is a sample server Petstore server."
+	//docs.SwaggerInfo.Version = "1.0"
+	//docs.SwaggerInfo.Host = "petstore.swagger.io"
+	//docs.SwaggerInfo.BasePath = "/v2"
+	//docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	customerRoute := route.Group("/customers")
 	{
@@ -41,6 +64,15 @@ func cors() gin.HandlerFunc {
 	}
 }
 
+// findAllCustomers godoc
+// @Summary findAllCustomers
+// @Description findAllCustomers
+// @Produce  json
+// @Success 200 {object} model.Account
+// @Failure 400,404 {object} httputil.HTTPError
+// @Failure 500 {object} httputil.HTTPError
+// @Failure default {object} httputil.DefaultError
+// @Router /customers/findAll [get]
 func findAllCustomers(c *gin.Context) {
 	customers, err := dao.FindAllCustomers()
 	if err != nil {
@@ -52,6 +84,18 @@ func findAllCustomers(c *gin.Context) {
 	}
 }
 
+// findCustomerById godoc
+// @Summary findCustomerById
+// @Description get string by ID
+// @ID findCustomerById
+// @Produce  json
+// @Param id path int true "id"
+// @Success 200 {object} model.Account
+// @Header 200 {string} Token "qwerty"
+// @Failure 400,404 {object} httputil.HTTPError
+// @Failure 500 {object} httputil.HTTPError
+// @Failure default {object} httputil.DefaultError
+// @Router /customers/findById/{id} [get]
 func findCustomerById(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
@@ -68,6 +112,16 @@ func findCustomerById(c *gin.Context) {
 	}
 }
 
+// addCustomer godoc
+// @Summary addCustomer
+// @Description addCustomer
+// @Accept  json
+// @Produce  json
+// @Success 200 {object}  json
+// @Failure 400,404 {object} httputil.HTTPError
+// @Failure 500 {object} httputil.HTTPError
+// @Failure default {object} httputil.DefaultError
+// @Router /customers/add/ [post]
 func addCustomer(c *gin.Context) {
 	var customer dto.Customer
 	err := c.ShouldBindJSON(&customer)
@@ -91,6 +145,17 @@ func addCustomer(c *gin.Context) {
 	}
 }
 
+// updateCustomer godoc
+// @Summary updateCustomer
+// @Description updateCustomer
+// @Accept  json
+// @Produce  json
+// @Param id path int true "id"
+// @Success 200 {object}  json
+// @Failure 400,404 {object} httputil.HTTPError
+// @Failure 500 {object} httputil.HTTPError
+// @Failure default {object} httputil.DefaultError
+// @Router /customers/update/{id} [put]
 func updateCustomer(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
@@ -118,6 +183,17 @@ func updateCustomer(c *gin.Context) {
 	}
 }
 
+// deleteCustomer godoc
+// @Summary deleteCustomer
+// @Description deleteCustomer
+// @Accept  json
+// @Produce  json
+// @Param id path int true "id"
+// @Success 200 {object}  json
+// @Failure 400,404 {object} httputil.HTTPError
+// @Failure 500 {object} httputil.HTTPError
+// @Failure default {object} httputil.DefaultError
+// @Router /customers/delete/{id} [delete]
 func deleteCustomer(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
