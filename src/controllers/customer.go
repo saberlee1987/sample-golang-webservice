@@ -44,9 +44,7 @@ func cors() gin.HandlerFunc {
 func findAllCustomers(c *gin.Context) {
 	customers, err := dao.FindAllCustomers()
 	if err != nil {
-		c.JSON(404, gin.H{
-			"error": err,
-		})
+		c.AbortWithError(404, err)
 	} else {
 		c.JSON(200, gin.H{
 			"customers": customers,
@@ -58,15 +56,11 @@ func findCustomerById(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.AbortWithError(http.StatusBadRequest, err)
 	}
 	customer, err := dao.FindCustomerById(id)
 	if err != nil {
-		c.JSON(404, gin.H{
-			"error": err.Error(),
-		})
+		c.AbortWithError(404, err)
 	} else {
 		c.JSON(200, gin.H{
 			"customer": customer,
@@ -78,15 +72,11 @@ func addCustomer(c *gin.Context) {
 	var customer dto.Customer
 	err := c.ShouldBindJSON(&customer)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.AbortWithError(http.StatusBadRequest, err)
 	}
 	result, err := dao.AddCustomer(customer)
 	if err != nil {
-		c.JSON(http.StatusNotAcceptable, gin.H{
-			"error": err.Error(),
-		})
+		c.AbortWithError(http.StatusNotAcceptable, err)
 	}
 	if result {
 		c.JSON(http.StatusCreated, gin.H{
@@ -94,7 +84,7 @@ func addCustomer(c *gin.Context) {
 			"message": "customer is created",
 		})
 	} else {
-		c.JSON(http.StatusNotAcceptable, gin.H{
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{
 			"code":    -1,
 			"message": "sorry can not insert customer in database",
 		})
@@ -105,29 +95,23 @@ func updateCustomer(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.AbortWithError(http.StatusBadRequest, err)
 	}
 	var customer dto.Customer
 	err = c.ShouldBindJSON(&customer)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.AbortWithError(http.StatusBadRequest, err)
 	}
 	result, err := dao.UpdateCustomer(customer, id)
 	if err != nil {
-		c.JSON(http.StatusNotAcceptable, gin.H{
-			"error": err.Error(),
-		})
+		c.AbortWithError(http.StatusNotAcceptable, err)
 	} else if result {
 		c.JSON(http.StatusCreated, gin.H{
 			"code":    0,
 			"message": "customer is updated",
 		})
 	} else {
-		c.JSON(http.StatusNotAcceptable, gin.H{
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{
 			"code":    -1,
 			"message": "sorry can not update customer in database",
 		})
@@ -137,22 +121,18 @@ func updateCustomer(c *gin.Context) {
 func deleteCustomer(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.AbortWithError(http.StatusBadRequest, err)
 	}
 	result, err := dao.DeleteCustomer(id)
 	if err != nil {
-		c.JSON(http.StatusNotAcceptable, gin.H{
-			"error": err.Error(),
-		})
+		c.AbortWithError(http.StatusNotAcceptable, err)
 	} else if result {
 		c.JSON(http.StatusCreated, gin.H{
 			"code":    0,
 			"message": "customer is deleted",
 		})
 	} else {
-		c.JSON(http.StatusNotAcceptable, gin.H{
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, gin.H{
 			"code":    -1,
 			"message": "sorry can not deleted customer in database",
 		})
